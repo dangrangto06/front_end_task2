@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home – Management System</title>
+  <meta name="description" content="Learn web development with our curated courses on HTML, CSS, JavaScript, and Bootstrap." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy-dark: #111d38;
+      --blue-accent: #4472f5;
+      --section-bg: #eef1f8;
+      --transition: 0.28s ease;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--section-bg); color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── NAVBAR ── */
+    nav {
+      background: var(--navy-dark);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 58px; position: sticky; top: 0; z-index: 500;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+    }
+    .nav-brand { font-size: 1.08rem; font-weight: 700; color: #fff; text-decoration: none; }
+    .nav-menu  { list-style: none; }
+    .nav-item  { position: relative; }
+    .nav-link  {
+      display: flex; align-items: center; gap: 5px; color: #fff; text-decoration: none;
+      font-size: 0.88rem; font-weight: 500; padding: 8px 14px; border-radius: 6px;
+      cursor: pointer; transition: background var(--transition);
+    }
+    .nav-link:hover, .nav-link.open { background: rgba(255,255,255,0.12); }
+    .chevron { font-size: 0.6rem; display: inline-block; transition: transform var(--transition); }
+    .chevron.open { transform: rotate(180deg); }
+    .dropdown {
+      position: absolute; top: calc(100% + 6px); right: 0; min-width: 160px;
+      background: var(--navy-dark); border-radius: 8px; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+      opacity: 0; pointer-events: none; transform: translateY(-8px);
+      transition: opacity var(--transition), transform var(--transition); z-index: 1000;
+    }
+    .dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+    .dropdown a {
+      display: block; padding: 12px 20px; color: #fff; text-decoration: none;
+      font-size: 0.88rem; font-weight: 500; transition: background var(--transition);
+    }
+    .dropdown a:hover { background: rgba(255,255,255,0.12); }
+
+    /* ── MAIN ── */
+    main { flex: 1; padding: 48px 24px 64px; max-width: 900px; margin: 0 auto; width: 100%; }
+
+    /* Welcome banner */
+    .welcome-banner {
+      background: #fff;
+      border-radius: 16px;
+      text-align: center;
+      padding: 48px 32px 40px;
+      margin-bottom: 40px;
+      box-shadow: 0 2px 16px rgba(100,120,200,0.08);
+    }
+    .welcome-banner h1 {
+      font-size: 2rem; font-weight: 800; color: #1a2235; margin-bottom: 10px;
+    }
+    .welcome-banner p { font-size: 0.95rem; color: #64748b; }
+
+    /* Courses heading */
+    .section-title {
+      font-size: 1.55rem; font-weight: 800; color: #1a2235;
+      text-align: center; margin-bottom: 28px;
+    }
+
+    /* Course grid */
+    .courses-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .course-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 28px 26px 24px;
+      box-shadow: 0 2px 16px rgba(100,120,200,0.08);
+      border-left: 5px solid transparent;
+      transition: transform var(--transition), box-shadow var(--transition);
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .course-card:hover { transform: translateY(-4px); box-shadow: 0 10px 32px rgba(0,0,0,0.1); }
+
+    .course-card.html       { border-color: #e05a1a; background: linear-gradient(135deg,#fff8f5 0%,#fff 60%); }
+    .course-card.css        { border-color: #3b82f6; background: linear-gradient(135deg,#f0f6ff 0%,#fff 60%); }
+    .course-card.bootstrap  { border-color: #7c3aed; background: linear-gradient(135deg,#f5f0ff 0%,#fff 60%); }
+    .course-card.javascript { border-color: #b59000; background: linear-gradient(135deg,#fffbea 0%,#fff 60%); }
+
+    .course-title {
+      font-size: 1.1rem; font-weight: 800;
+    }
+    .course-card.html       .course-title { color: #e05a1a; }
+    .course-card.css        .course-title { color: #3b82f6; }
+    .course-card.bootstrap  .course-title { color: #7c3aed; }
+    .course-card.javascript .course-title { color: #b59000; }
+
+    .course-desc { font-size: 0.83rem; color: #4b5563; line-height: 1.6; flex: 1; }
+
+    .btn-learn {
+      display: inline-block; padding: 9px 20px;
+      border: none; border-radius: 8px; font-size: 0.82rem; font-weight: 700;
+      font-family: inherit; cursor: pointer; margin-top: 6px; width: fit-content;
+      transition: filter var(--transition), transform var(--transition), box-shadow var(--transition);
+      color: #fff; letter-spacing: 0.2px;
+    }
+    .btn-learn:hover { filter: brightness(1.12); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,0.18); }
+    .btn-learn:active { transform: translateY(0); }
+
+    .course-card.html       .btn-learn { background: #e05a1a; }
+    .course-card.css        .btn-learn { background: #3b82f6; }
+    .course-card.bootstrap  .btn-learn { background: #7c3aed; }
+    .course-card.javascript .btn-learn { background: #b59000; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #fff; border-top: 1px solid #e5e7eb;
+      text-align: center; padding: 18px;
+      font-size: 0.8rem; color: #94a3b8;
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(17,29,56,0.55);
+      backdrop-filter: blur(3px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9000; opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal-box {
+      background: #fff; border-radius: 14px;
+      padding: 28px 32px 24px; width: 100%; max-width: 420px; margin: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      transform: scale(0.92) translateY(12px);
+      transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
+      position: relative;
+    }
+    .modal-overlay.open .modal-box { transform: scale(1) translateY(0); }
+
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .modal-header h2 { font-size: 1rem; font-weight: 700; color: #374151; }
+
+    .modal-close-x {
+      background: none; border: none; cursor: pointer; font-size: 1.1rem;
+      color: #9ca3af; padding: 2px 6px; border-radius: 6px;
+      transition: color var(--transition), background var(--transition);
+      line-height: 1;
+    }
+    .modal-close-x:hover { color: #374151; background: #f3f4f6; }
+
+    .modal-course-name { font-size: 1.18rem; font-weight: 800; color: #1e293b; margin-bottom: 10px; }
+    .modal-course-desc { font-size: 0.87rem; color: #4b5563; line-height: 1.7; }
+
+    .modal-footer { margin-top: 22px; display: flex; justify-content: flex-end; }
+    .modal-btn-close {
+      background: #4b5563; color: #fff; border: none; border-radius: 8px;
+      padding: 9px 22px; font-size: 0.85rem; font-weight: 600;
+      font-family: inherit; cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .modal-btn-close:hover { background: #374151; transform: translateY(-1px); }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .courses-grid { grid-template-columns: 1fr; }
+      nav { padding: 0 20px; }
+      .welcome-banner h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAVBAR ── -->
+  <nav id="navbar">
+    <a href="home.html" class="nav-brand" id="nav-brand">Management System</a>
+    <ul class="nav-menu">
+      <li class="nav-item">
+        <a class="nav-link" id="nav-home-btn" role="button" aria-haspopup="true" aria-expanded="false">
+          Home <span class="chevron" id="nav-chevron">▾</span>
+        </a>
+        <div class="dropdown" id="nav-dropdown" role="menu">
+          <a href="index.html"   id="dd-landing">Landing Page</a>
+          <a href="login.html"   id="dd-login">Login</a>
+          <a href="register.html" id="dd-signup">Sign Up</a>
+          <a href="#"            id="dd-logout" onclick="logout()">Logout</a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <main>
+    <!-- Welcome banner -->
+    <div class="welcome-banner" id="welcome-banner">
+      <h1>Welcome to My Website</h1>
+      <p>Learn web development with our courses.</p>
+    </div>
+
+    <!-- Courses -->
+    <h2 class="section-title" id="courses-heading">Our Courses</h2>
+
+    <div class="courses-grid" id="courses-grid">
+
+      <!-- HTML -->
+      <div class="course-card html" id="card-html">
+        <div class="course-title">HTML</div>
+        <p class="course-desc">Learn how to create the structure of web pages using headings, paragraphs, images, and links.</p>
+        <button class="btn-learn" id="btn-html" onclick="openModal('html')">Learn More</button>
+      </div>
+
+      <!-- CSS -->
+      <div class="course-card css" id="card-css">
+        <div class="course-title">CSS</div>
+        <p class="course-desc">Learn how to style web pages with colors, fonts, spacing, and attractive layouts.</p>
+        <button class="btn-learn" id="btn-css" onclick="openModal('css')">Learn More</button>
+      </div>
+
+      <!-- Bootstrap -->
+      <div class="course-card bootstrap" id="card-bootstrap">
+        <div class="course-title">Bootstrap</div>
+        <p class="course-desc">Build responsive websites quickly using Bootstrap's grid system and components.</p>
+        <button class="btn-learn" id="btn-bootstrap" onclick="openModal('bootstrap')">Learn More</button>
+      </div>
+
+      <!-- JavaScript -->
+      <div class="course-card javascript" id="card-javascript">
+        <div class="course-title">JavaScript</div>
+        <p class="course-desc">Make web pages interactive with button clicks, form validation, and dynamic content.</p>
+        <button class="btn-learn" id="btn-javascript" onclick="openModal('javascript')">Learn More</button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer id="page-footer">
+    Copyright 2026 Management System
+  </footer>
+
+  <!-- ── MODAL ── -->
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-course-name">
+    <div class="modal-box" id="modal-box">
+      <div class="modal-header">
+        <h2>Course Details</h2>
+        <button class="modal-close-x" id="modal-close-x" onclick="closeModal()" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-course-name" id="modal-course-name"></div>
+      <p class="modal-course-desc" id="modal-course-desc"></p>
+      <div class="modal-footer">
+        <button class="modal-btn-close" id="modal-btn-close" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Course data ──
+    const COURSES = {
+      html: {
+        name: 'HTML',
+        desc: 'HTML stands for HyperText Markup Language. It creates the structure of a web page using headings, paragraphs, images, and links.'
+      },
+      css: {
+        name: 'CSS',
+        desc: 'CSS stands for Cascading Style Sheets. It controls the appearance of web pages, including colors, fonts, spacing, and layouts.'
+      },
+      bootstrap: {
+        name: 'Bootstrap',
+        desc: 'Bootstrap is a front-end framework. It provides ready-made components and a responsive grid system to build websites quickly.'
+      },
+      javascript: {
+        name: 'JavaScript',
+        desc: 'JavaScript is a programming language that makes web pages interactive. It can handle button clicks, form validation, popups, and dynamic content.'
+      }
+    };
+
+    // ── Modal ──
+    function openModal(key) {
+      const data = COURSES[key];
+      document.getElementById('modal-course-name').textContent = data.name;
+      document.getElementById('modal-course-desc').textContent = data.desc;
+      document.getElementById('modal-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Close on overlay click
+    document.getElementById('modal-overlay').addEventListener('click', e => {
+      if (e.target === document.getElementById('modal-overlay')) closeModal();
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // ── Navbar dropdown ──
+    const navBtn   = document.getElementById('nav-home-btn');
+    const dropdown = document.getElementById('nav-dropdown');
+    const chevron  = document.getElementById('nav-chevron');
+
+    navBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = dropdown.classList.contains('open');
+      dropdown.classList.toggle('open', !isOpen);
+      chevron.classList.toggle('open', !isOpen);
+      navBtn.classList.toggle('open', !isOpen);
+      navBtn.setAttribute('aria-expanded', String(!isOpen));
+    });
+
+    document.addEventListener('click', () => {
+      dropdown.classList.remove('open');
+      chevron.classList.remove('open');
+      navBtn.classList.remove('open');
+      navBtn.setAttribute('aria-expanded', 'false');
+    });
+
+    // ── Logout ──
+    function logout() {
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,393 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Management System â€“ Work Smarter, Achieve Your Goals</title>
+  <meta name="description" content="A simple, secure, and efficient management system that helps users organize their work, manage information, track progress, and improve productivity." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #1a2847;
+      --navy-dark: #111d38;
+      --blue-accent: #4472f5;
+      --blue-hover: #2c5aee;
+      --text-white: #ffffff;
+      --text-muted: rgba(255,255,255,0.82);
+      --section-bg: #f4f6fb;
+      --card-bg: #ffffff;
+      --card-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --transition: 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--section-bg); color: #1e293b; overflow-x: hidden; }
+
+    /* NAVBAR */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: var(--navy-dark);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 58px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.35);
+    }
+    .nav-brand { font-size: 1.08rem; font-weight: 700; color: #fff; letter-spacing: 0.3px; text-decoration: none; }
+    .nav-menu { display: flex; align-items: center; list-style: none; }
+    .nav-item { position: relative; }
+    .nav-link {
+      display: flex; align-items: center; gap: 5px;
+      color: #fff; text-decoration: none; font-size: 0.88rem; font-weight: 500;
+      padding: 8px 14px; border-radius: 6px; transition: background var(--transition);
+    }
+    .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.12); }
+    .nav-link.open { background: rgba(255,255,255,0.12); }
+    .chevron { font-size: 0.6rem; transition: transform var(--transition); display: inline-block; }
+    .chevron.open { transform: rotate(180deg); }
+    .dropdown {
+      position: absolute; top: calc(100% + 6px); right: 0;
+      background: var(--navy-dark); border-radius: 8px; min-width: 160px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45); opacity: 0; pointer-events: none;
+      transform: translateY(-8px); transition: opacity var(--transition), transform var(--transition);
+      overflow: hidden; z-index: 2000;
+    }
+    .dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+    .dropdown a {
+      display: block; padding: 12px 20px; color: #fff; text-decoration: none;
+      font-size: 0.88rem; font-weight: 500; transition: background var(--transition);
+    }
+    .dropdown a:hover { background: rgba(255,255,255,0.12); }
+
+    /* HERO SLIDER */
+    .hero { position: relative; width: 100%; height: 420px; margin-top: 58px; overflow: hidden; }
+    .slides-wrapper { display: flex; height: 100%; transition: transform 0.7s cubic-bezier(0.77,0,0.18,1); }
+    .slide { min-width: 100%; height: 100%; position: relative; overflow: hidden; }
+    .slide-bg { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; transform: scale(1.05); transition: transform 6s ease; }
+    .slide.active .slide-bg { transform: scale(1); }
+    .slide-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(17,29,56,0.88) 0%, rgba(17,29,56,0.72) 45%, rgba(17,29,56,0.25) 100%);
+    }
+    .slide-content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 80px; max-width: 560px; }
+    .slide-label {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase;
+      color: rgba(255,255,255,0.75); margin-bottom: 14px;
+      opacity: 0; transform: translateY(16px); transition: opacity 0.55s 0.2s ease, transform 0.55s 0.2s ease;
+    }
+    .slide-title {
+      font-size: 2.75rem; font-weight: 800; color: #fff; line-height: 1.18; margin-bottom: 16px;
+      opacity: 0; transform: translateY(20px); transition: opacity 0.55s 0.35s ease, transform 0.55s 0.35s ease;
+    }
+    .slide-desc {
+      font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; max-width: 380px; margin-bottom: 28px;
+      opacity: 0; transform: translateY(20px); transition: opacity 0.55s 0.48s ease, transform 0.55s 0.48s ease;
+    }
+    .slide-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--blue-accent); color: #fff; text-decoration: none;
+      font-size: 0.86rem; font-weight: 600; padding: 11px 24px; border-radius: 50px;
+      border: none; cursor: pointer; width: fit-content;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.55s 0.6s ease, transform 0.55s 0.6s ease, background 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 4px 18px rgba(68,114,245,0.4);
+    }
+    .slide-btn:hover { background: var(--blue-hover); box-shadow: 0 6px 24px rgba(68,114,245,0.55); transform: translateY(-1px) !important; }
+    .slide.active .slide-label,
+    .slide.active .slide-title,
+    .slide.active .slide-desc,
+    .slide.active .slide-btn { opacity: 1; transform: translateY(0); }
+
+    .slider-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%); z-index: 20;
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); color: #fff;
+      width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1.2rem; transition: background var(--transition), transform var(--transition);
+      backdrop-filter: blur(4px);
+    }
+    .slider-arrow:hover { background: rgba(255,255,255,0.22); transform: translateY(-50%) scale(1.08); }
+    .slider-arrow.prev { left: 20px; }
+    .slider-arrow.next { right: 20px; }
+
+    .slider-dots { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); display: flex; gap: 7px; z-index: 20; }
+    .dot { width: 22px; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.35); cursor: pointer; transition: background var(--transition), width var(--transition); border: none; }
+    .dot.active { background: #fff; width: 32px; }
+
+    /* GOAL SECTION */
+    .goal-section { background: var(--section-bg); padding: 72px 0 80px; }
+    .goal-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 40px;
+      display: grid; grid-template-columns: 340px 1fr; gap: 64px; align-items: flex-start;
+    }
+    .goal-img { width: 100%; height: 380px; object-fit: cover; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.14); display: block; }
+    .goal-text-col { padding-top: 8px; }
+    .goal-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--blue-accent); margin-bottom: 12px; }
+    .goal-title { font-size: 2rem; font-weight: 800; color: #1a2235; margin-bottom: 18px; line-height: 1.25; }
+    .goal-desc { font-size: 0.9rem; color: #5a6478; line-height: 1.75; margin-bottom: 32px; max-width: 480px; }
+
+    .feature-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .feature-card {
+      background: var(--card-bg); border-radius: 12px; padding: 20px 20px 18px;
+      box-shadow: var(--card-shadow); display: flex; flex-direction: column; gap: 8px;
+      transition: transform var(--transition), box-shadow var(--transition);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 10px 36px rgba(0,0,0,0.12); }
+    .feature-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; margin-bottom: 4px; }
+    .feature-icon.blue { background: #eef2ff; }
+    .feature-icon.orange { background: #fff7ed; }
+    .feature-icon.green { background: #ecfdf5; }
+    .feature-icon.purple { background: #f5f3ff; }
+    .feature-card h3 { font-size: 0.88rem; font-weight: 700; color: #1e293b; }
+    .feature-card p { font-size: 0.78rem; color: #6b7280; line-height: 1.55; }
+
+    /* CTA SECTION */
+    .cta-section {
+      background: linear-gradient(135deg, #eef2ff 0%, #f0f4ff 50%, #e8efff 100%);
+      padding: 72px 40px;
+      text-align: center;
+      border-top: 1px solid rgba(68,114,245,0.1);
+    }
+    .cta-section h2 {
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: #1a2235;
+      margin-bottom: 12px;
+    }
+    .cta-section p {
+      font-size: 0.92rem;
+      color: #64748b;
+      margin-bottom: 28px;
+    }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--blue-accent);
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 13px 32px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(68,114,245,0.35);
+      transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+    }
+    .cta-btn:hover {
+      background: var(--blue-hover);
+      box-shadow: 0 8px 28px rgba(68,114,245,0.5);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 860px) {
+      .goal-inner { grid-template-columns: 1fr; gap: 36px; }
+      .goal-img { height: 240px; }
+      .slide-content { padding: 0 56px; }
+      .slide-title { font-size: 2rem; }
+    }
+    @media (max-width: 520px) {
+      nav { padding: 0 20px; }
+      .slide-content { padding: 0 36px; }
+      .slide-title { font-size: 1.6rem; }
+      .feature-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="navbar" role="navigation" aria-label="Main navigation">
+    <a href="#" class="nav-brand" id="nav-brand">Management System</a>
+    <ul class="nav-menu">
+      <li class="nav-item">
+        <a href="#" class="nav-link active" id="nav-home">
+          Home <span class="chevron">â–¾</span>
+        </a>
+        <div class="dropdown" id="nav-dropdown">
+          <a href="login.html" id="dd-login">Login</a>
+          <a href="register.html" id="dd-signup">Sign Up</a>
+          <a href="#" id="dd-help">Help</a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <section class="hero" id="hero" aria-label="Hero image slider">
+    <div class="slides-wrapper" id="slidesWrapper">
+
+      <div class="slide active" id="slide-1">
+        <img src="hero_slide1.jpg" alt="Professional working at desk" class="slide-bg" />
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-label">Work Smarter</span>
+          <h1 class="slide-title">Achieve Your Goals</h1>
+          <p class="slide-desc">Track progress, manage information, and improve productivity with a clear and organized workflow.</p>
+          <a href="login.html" class="slide-btn" id="btn-slide-1">Login Now â†’</a>
+        </div>
+      </div>
+
+      <div class="slide" id="slide-2">
+        <img src="hero_slide2.jpg" alt="Team collaborating" class="slide-bg" />
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-label">Work Together</span>
+          <h2 class="slide-title">Better Team<br>Collaboration</h2>
+          <p class="slide-desc">Keep your team connected, organize responsibilities, and manage tasks in one convenient place.</p>
+          <a href="#" class="slide-btn" id="btn-slide-2">Join Us â†’</a>
+        </div>
+      </div>
+
+      <div class="slide" id="slide-3">
+        <img src="hero_slide3.jpg" alt="Modern office corridor" class="slide-bg" />
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-label">Welcome to Our Platform</span>
+          <h2 class="slide-title">Management Made<br>Simple</h2>
+          <p class="slide-desc">Simplify your work, stay organized, and achieve more with our easy-to-use management system.</p>
+          <a href="register.html" class="slide-btn" id="btn-slide-3">Get Started â†’</a>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="slider-arrow prev" id="slider-prev" aria-label="Previous slide">&#8249;</button>
+    <button class="slider-arrow next" id="slider-next" aria-label="Next slide">&#8250;</button>
+
+    <div class="slider-dots" role="tablist" aria-label="Slide indicators">
+      <button class="dot active" id="dot-0" role="tab" aria-selected="true" aria-label="Slide 1"></button>
+      <button class="dot" id="dot-1" role="tab" aria-selected="false" aria-label="Slide 2"></button>
+      <button class="dot" id="dot-2" role="tab" aria-selected="false" aria-label="Slide 3"></button>
+    </div>
+  </section>
+
+  <section class="goal-section" id="goal" aria-labelledby="goal-title">
+    <div class="goal-inner">
+      <div class="goal-img-col">
+        <img src="goal_section_img.jpg" alt="Modern open office space" class="goal-img" />
+      </div>
+      <div class="goal-text-col" id="features">
+        <p class="goal-label">Our Goal</p>
+        <h2 class="goal-title" id="goal-title">Goal of This Website</h2>
+        <p class="goal-desc">Our goal is to provide a simple, secure, and efficient management system that helps users organize their work, manage information, track progress, and improve productivity â€” all in one place.</p>
+        <div class="feature-cards">
+          <div class="feature-card" id="feature-team">
+            <div class="feature-icon blue">ðŸ‘¥</div>
+            <h3>Team Management</h3>
+            <p>Organize your team, assign roles, and track responsibilities effortlessly.</p>
+          </div>
+          <div class="feature-card" id="feature-secure">
+            <div class="feature-icon orange">ðŸ”’</div>
+            <h3>Secure Access</h3>
+            <p>Keep data protected with role-based access control and encryption.</p>
+          </div>
+          <div class="feature-card" id="feature-progress">
+            <div class="feature-icon green">ðŸ“ˆ</div>
+            <h3>Track Progress</h3>
+            <p>Monitor milestones, deadlines, and KPIs with intuitive dashboards.</p>
+          </div>
+          <div class="feature-card" id="feature-workflow">
+            <div class="feature-icon purple">âš¡</div>
+            <h3>Smart Workflow</h3>
+            <p>Automate repetitive tasks and streamline your daily operations.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA SECTION -->
+  <section class="cta-section" id="cta" aria-labelledby="cta-title">
+    <h2 id="cta-title">Ready to Get Started?</h2>
+    <p>Create your account and start organizing your work today.</p>
+    <a href="register.html" class="cta-btn" id="btn-create-account">Create an Account</a>
+  </section>
+
+  <script>
+    // â”€â”€ DROPDOWN TOGGLE â”€â”€
+    (() => {
+      const navLink   = document.getElementById('nav-home');
+      const dropdown  = document.getElementById('nav-dropdown');
+      const chevron   = navLink.querySelector('.chevron');
+
+      function openMenu() {
+        dropdown.classList.add('open');
+        chevron.classList.add('open');
+        navLink.classList.add('open');
+        navLink.setAttribute('aria-expanded', 'true');
+      }
+
+      function closeMenu() {
+        dropdown.classList.remove('open');
+        chevron.classList.remove('open');
+        navLink.classList.remove('open');
+        navLink.setAttribute('aria-expanded', 'false');
+      }
+
+      navLink.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropdown.classList.contains('open') ? closeMenu() : openMenu();
+      });
+
+      // Close when clicking outside
+      document.addEventListener('click', e => {
+        if (!navLink.contains(e.target) && !dropdown.contains(e.target)) closeMenu();
+      });
+
+      // Close on Escape key
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeMenu();
+      });
+    })();
+
+    // â”€â”€ SLIDER â”€â”€
+    (() => {
+      const wrapper = document.getElementById('slidesWrapper');
+      const slides  = document.querySelectorAll('.slide');
+      const dots    = document.querySelectorAll('.dot');
+      const total   = slides.length;
+      let current   = 0;
+      let timer     = null;
+
+      function goTo(idx) {
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        dots[current].setAttribute('aria-selected', 'false');
+        current = (idx + total) % total;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+        dots[current].setAttribute('aria-selected', 'true');
+        wrapper.style.transform = 'translateX(-' + (current * 100) + '%)';
+        resetTimer();
+      }
+
+      function resetTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => goTo(current + 1), 5000);
+      }
+
+      document.getElementById('slider-prev').addEventListener('click', () => goTo(current - 1));
+      document.getElementById('slider-next').addEventListener('click', () => goTo(current + 1));
+      dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft')  goTo(current - 1);
+        if (e.key === 'ArrowRight') goTo(current + 1);
+      });
+
+      let startX = 0;
+      wrapper.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+      wrapper.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 40) goTo(dx < 0 ? current + 1 : current - 1);
+      }, { passive: true });
+
+      resetTimer();
+    })();
+  </script>
+</body>
+</html>
+
